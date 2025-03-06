@@ -1,0 +1,11 @@
+.git/
+.vs/
+.idea/
+l/bin/
+l/obj
+l/ClassDiagram1.cd
+l/l.csproj
+ClassLibrary/bin
+ClassLibrary/obj
+ConsoleMenu/bin
+ConsoleMenu/obj
