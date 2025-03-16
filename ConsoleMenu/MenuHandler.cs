@@ -191,7 +191,6 @@ namespace DeviceSimulatorConsole
             Console.WriteLine("2. Динаміки");
             Console.WriteLine("3. Навушники");
             Console.WriteLine("4. Мікрофон");
-            Console.WriteLine("5. Дисплей"); 
             Console.Write("Ваш вибір: ");
             string choice = Console.ReadLine();
 
@@ -201,7 +200,6 @@ namespace DeviceSimulatorConsole
                 "2" => new Speakers(),
                 "3" => new Headphones(),
                 "4" => new Microphone(),
-                "5" => new BasicPeripheral("Display"), 
                 _ => null
             };
 

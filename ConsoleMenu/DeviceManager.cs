@@ -6,16 +6,21 @@ namespace DeviceSimulatorConsole
 {
     public class DeviceManager
     {
-        public Laptop Laptop { get; }
-        public Smartphone Smartphone { get; }
-        public Tablet Tablet { get; }
+        public IDevice Laptop { get; }
+        public IDevice Smartphone { get; }
+        public IDevice Tablet { get; }
 
         public DeviceManager()
         {
-            Laptop = new Laptop(3000, 512); // 3000 мАг, 512 ГБ
-            Smartphone = new Smartphone(5000, 128); // 5000 мАг, 128 ГБ
-            Tablet = new Tablet(7000, 256); // 7000 мАг, 256 ГБ
+            var laptopFactory = new LaptopFactory(3000, 512);
+            Laptop = laptopFactory.CreateDevice();
 
+            var smartphoneFactory = new SmartphoneFactory(5000, 128);
+            Smartphone = smartphoneFactory.CreateDevice();
+
+            var tabletFactory = new TabletFactory(7000, 256);
+            Tablet = tabletFactory.CreateDevice();
+            
             var logger = new ConsoleLogger();
             logger.Subscribe(Laptop);
             logger.Subscribe(Smartphone);
