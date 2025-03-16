@@ -15,5 +15,7 @@
         void DisconnectFromNetwork();
 
         event EventHandler<string> ActivityStatusChanged;
+        event EventHandler<PeripheralEventArgs> PeripheralConnected;
+        event EventHandler<PeripheralEventArgs> PeripheralDisconnected;
     }
 }

@@ -14,6 +14,9 @@ namespace DeviceSimulator
         protected double availableStorageGB;
 
         public event EventHandler<string> ActivityStatusChanged;
+        public event EventHandler<PeripheralEventArgs> PeripheralConnected;
+        public event EventHandler<PeripheralEventArgs> PeripheralDisconnected;
+        
 
         protected Device(double storageGB)
         {
@@ -173,5 +176,16 @@ namespace DeviceSimulator
         {
             ActivityStatusChanged?.Invoke(this, message);
         }
+        
+        protected virtual void OnPeripheralConnected(IPeripheral peripheral)
+        {
+            PeripheralConnected?.Invoke(this, new PeripheralEventArgs(peripheral));
+        }
+
+        protected virtual void OnPeripheralDisconnected(IPeripheral peripheral)
+        {
+            PeripheralDisconnected?.Invoke(this, new PeripheralEventArgs(peripheral));
+        }
+        
     }
 }
