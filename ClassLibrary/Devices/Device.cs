@@ -12,6 +12,7 @@ namespace DeviceSimulator
         protected readonly List<IPeripheral> connectedPeripherals;
         protected bool hasNetworkConnection;
         protected double availableStorageGB;
+        private readonly ActivityStrategyFactory strategyFactory;
 
         public event EventHandler<string> ActivityStatusChanged;
         public event EventHandler<PeripheralEventArgs> PeripheralConnected;
@@ -23,6 +24,7 @@ namespace DeviceSimulator
             installedSoftware = new List<ISoftware>();
             connectedPeripherals = new List<IPeripheral>();
             availableStorageGB = storageGB;
+            strategyFactory = new ActivityStrategyFactory();
         }
 
         public bool TurnOn()
@@ -136,8 +138,36 @@ namespace DeviceSimulator
             OnActivityStatusChanged("Disconnected from network");
         }
 
-        public abstract bool ExecuteActivity(ActivityType activity, TimeSpan duration);
+        public bool ExecuteActivity(ActivityType activity, TimeSpan duration)
+        {
+            if (!isOn || currentPowerSource?.IsAvailable != true)
+            {
+                OnActivityStatusChanged($"Cannot execute {activity}: Device is off or no power source available");
+                return false;
+            }
 
+            var strategy = strategyFactory.CreateStrategy(activity);
+            
+            if (!strategy.CanExecute(this))
+            {
+                OnActivityStatusChanged($"Cannot execute {activity}: Missing required peripherals");
+                return false;
+            }
+
+            bool result = strategy.Execute(this, duration);
+            
+            if (result)
+            {
+                OnActivityStatusChanged($"Executing {activity} for {duration.TotalHours:F1} hours");
+                ResetBatteryMode();
+            }
+            else
+            {
+                OnActivityStatusChanged($"Failed to execute {activity}");
+            }
+            
+            return result;
+        }
         protected virtual bool PerformActivity(ActivityType activity, TimeSpan duration)
         {
             if (!CanExecuteActivity(activity))
